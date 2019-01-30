@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/css/css.css">
+    {% block stylesheets %}{% endblock %}
+</head>
+<body class="">
+<main>
+    <div class="cd-index cd-main-content">
+        <div>
+            <h1>Page Transition</h1>
+            {% block body %}{% endblock %}
+        </div>
+    </div>
+</main>
+
+<div class="cd-cover-layer"></div> <!-- this is the cover layer -->
+
+<div class="cd-loading-bar"></div> <!-- this is the loading bar -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+<script>
+
+        $('.pouet').click(function (event) {
+            event.preventDefault();
+            //detect which page has been selected
+            let newPage = event.target;
+            //if the page is not animating - trigger animation
+            changePage(newPage, true);
+        });
+
+        ////////////////////////////////////////////////////////////////////////////////
+        // ChangePage() si l'utilisateur clique sur le bouton Précédent du navigateur //
+        ////////////////////////////////////////////////////////////////////////////////
+
+        $(window).on( 'popstate', function () {
+                let newPageArray = location.pathname.split('/'),
+                    //this is the url of the page to be loaded
+                    newPage = newPageArray[newPageArray.length - 1];
+
+                changePage(newPage, true);
+        });
+
+        //////////////////////////////////////////////////////////////////////////////
+        // Déclenche l'animation et charge le nouveau contenue ( loadNewContent() ) //
+        //////////////////////////////////////////////////////////////////////////////
+
+        function changePage(url, bool) {
+            // trigger page animation
+            $('body').toggleClass('page-is-changing');
+
+            setTimeout(function () {
+                loadNewContent(url, bool);
+            }, 1500)
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////
+        // Quand le contenue est changé, il remplace l'ancien. La classe .page-is-changing //
+        // est supprimée du corps pour inverser l'animation de la page et la nouvelle page //
+        // chargée est ajoutée à window.history                                            //
+        /////////////////////////////////////////////////////////////////////////////////////
+
+        function loadNewContent(url, bool) {
+            let newSectionName = 'cd-' + url;
+            let section = $('<div class="cd-main-content ' + newSectionName + '"></div>');
+            section.load(url + ' .cd-main-content > *', function () {
+                // load new content and replace <main> content with the new one
+                $('main').html(section);
+                $('body').toggleClass('page-is-changing');
+                $('main > div > a').toggleClass('pouet');
+
+                $('.cd-loading-bar').one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function () {
+                    $('.cd-loading-bar').off('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend');
+                });
+                    //add the new page to the window.history
+                    //if the new page was triggered by a 'popstate' event, don't add it
+                    window.history.pushState({path: url}, '', url);
+            });
+        }
+
+</script>
+{% block javascripts %}{% endblock %}
+</body>
+</html>

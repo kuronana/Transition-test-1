@@ -1,0 +1,56 @@
+body {
+    background-color: #2c3141;
+}
+
+.bef {
+    /* these are the 2 half blocks which cover the content once the animation is triggered */
+    content: '';
+    background-color: #4089a6;
+    height: 100%;
+    width: 50vw;
+    position: fixed;
+    transition:  0.4s 0.4s ease-in;
+}
+
+.aft {
+    /* these are the 2 half blocks which cover the content once the animation is triggered */
+    content: '';
+    background-color: #4089a6;
+    height: 100%;
+    width: 50vw;
+    position: fixed;
+    left: 50vw;
+    transition:  0.4s 0.4s ease-in;
+}
+
+.chargingBefore {
+    transform: translateX(-100%);
+}
+
+.chargingAfter {
+    transform: translateX(100%);
+}
+
+.cd-loading-bar {
+    /* this is the loding bar - visible while switching from one page to the following one */
+    position: absolute;
+    left: 50vw;
+    top: 0;
+    z-index: 4;
+    height: 100%;
+    width: 2px;
+    visibility: hidden;
+    background-color: #4089a6;
+    transform: scaleY(1);
+    transition: transform 1s, background-color 1s ;
+}
+
+.cd-loading-bar.loadbarCharge {
+    background-color: #283040;
+    transform: scaleY(0.2);
+    transition: transform 1s, background-color 1s ;
+}
+
+.visible {
+    visibility: visible;
+}
